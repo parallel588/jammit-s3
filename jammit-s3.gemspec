@@ -15,7 +15,11 @@ Gem::Specification.new do |s|
   s.require_paths     = ['lib']
   s.executables       = ['jammit-s3']
 
-  s.add_dependency 'jammit',    '~> 0.6.0'
+  # I can't figure out how to link this to a jammit built from a GitHub fork
+  # Adding it to our Gemfile does not work. Will require manually in travergence Gemfile
+
+  #s.add_dependency 'jammit',    '~> 0.6.0'
+
   s.add_dependency 'mimemagic',  '>= 0.1.7'
   s.add_dependency 'aws-s3', ">= 0.6.2"
   s.add_dependency 'ruby-hmac'
