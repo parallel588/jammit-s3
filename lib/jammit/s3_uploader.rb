@@ -121,7 +121,7 @@ module Jammit
         retries = 3
 
         new_object.store(options)
-      rescue SocketError => e
+      rescue Exception => e
         log "Problems connecting to S3. Sleeping... (#{ retries } left)"
 
         if ( retries -= 1 ) > 0
