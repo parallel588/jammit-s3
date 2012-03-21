@@ -104,11 +104,13 @@ module Jammit
     end
 
     def upload_file(local_path, remote_path, use_gzip)
+      file = open(local_path)
+      
       # save to s3
       log "#{local_path.gsub(/^#{ASSET_ROOT}\/public\//, "")} => #{remote_path}"
       new_object, options = @bucket.new_object, {}
       new_object.key = remote_path
-      new_object.value = open(local_path)
+      new_object.value = file
       options[:cache_control] = @cache_control if @cache_control
       options[:content_type] = MimeMagic.by_path(remote_path)
       options[:content_encoding] = "gzip" if use_gzip
@@ -133,6 +135,8 @@ module Jammit
           new_object.store(options)
         end
       end
+
+      file.close
     end
 
     def find_or_create_bucket
