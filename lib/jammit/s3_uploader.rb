@@ -127,7 +127,7 @@ module Jammit
         if ( retries -= 1 ) > 0
           sleep 5
 
-          # reconnect to s3
+          # reconnect ito s3 
           AWS::S3::Base.establish_connection!(:access_key_id => @access_key_id, :secret_access_key => @secret_access_key)
 
           new_object.store(options)
