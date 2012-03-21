@@ -117,24 +117,10 @@ module Jammit
       options[:expires] = @expires if @expires
       options[:access] = @acl if @acl
 
-      # ruby http lib seems to crap out after a ton of http connections
-      # lets catch the error, sleep a sec and retry
-      begin
-        retries = 3
+      new_object.store(options)
 
-        new_object.store(options)
-      rescue Exception => e
-        log "Problems connecting to S3. Sleeping... (#{ retries } left)"
-
-        if ( retries -= 1 ) > 0
-          sleep 5
-
-          # reconnect ito s3 
-          AWS::S3::Base.establish_connection!(:access_key_id => @access_key_id, :secret_access_key => @secret_access_key)
-
-          new_object.store(options)
-        end
-      end
+      # silly rabbit, a process only gets 256 file descriptors by default. connections
+      # dont close unless the file is opened with a block!
 
       file.close
     end
