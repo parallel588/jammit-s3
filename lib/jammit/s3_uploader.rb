@@ -122,10 +122,14 @@ module Jammit
 
         new_object.store(options)
       rescue SocketError => e
-        log "Problems connecting to S3. Sleeping... (#{ retries })"
+        log "Problems connecting to S3. Sleeping... (#{ retries } left)"
 
         if ( retries -= 1 ) > 0
           sleep 5
+
+          # reconnect to s3
+          @bucket = find_or_create_bucket
+
           new_object.store(options)
         end
       end
