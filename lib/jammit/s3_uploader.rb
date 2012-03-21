@@ -114,7 +114,21 @@ module Jammit
       options[:content_encoding] = "gzip" if use_gzip
       options[:expires] = @expires if @expires
       options[:access] = @acl if @acl
-      new_object.store(options)
+
+      # ruby http lib seems to crap out after a ton of http connections
+      # lets catch the error, sleep a sec and retry
+      begin
+        retries = 3
+
+        new_object.store(options)
+      rescue SocketError => e
+        log "Problems connecting to S3. Sleeping... (#{ retries })"
+
+        if ( retries -= 1 ) > 0
+          sleep 5
+          new_object.store(options)
+        end
+      end
     end
 
     def find_or_create_bucket
