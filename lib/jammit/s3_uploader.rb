@@ -128,7 +128,7 @@ module Jammit
           sleep 5
 
           # reconnect to s3
-          @bucket = find_or_create_bucket
+          AWS::S3::Base.establish_connection!(:access_key_id => @access_key_id, :secret_access_key => @secret_access_key)
 
           new_object.store(options)
         end
