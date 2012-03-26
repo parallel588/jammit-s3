@@ -103,7 +103,7 @@ module Jammit
 
             path_parts = remote_path.split( '/' )
 
-            path_parts.slice # get rid of the first part of the path
+            path_parts.shift # get rid of the first part of the path
             remote_path = path_parts.join( '/' ) # reassembled path
 
             path = "assets/#{ Jammit.configuration[ :package_path_suffix ] }/#{ type }/#{ remote_path }"
