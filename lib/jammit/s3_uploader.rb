@@ -107,7 +107,7 @@ module Jammit
             path_parts = local_path.split( '/' )
 
             # we only want to do this if this is not a compiled asset or image
-            if path_parts[0] == 'assets' || path_parts[0] == 'images'
+            if path_parts[0] != 'assets' && path_parts[0] != 'images'
               path_parts.shift # remove first element
               filename = path_parts.join( '/' ) # we want the whole directory structure in the resulting path
             end
