@@ -91,7 +91,7 @@ module Jammit
           if !obj || (obj.etag != Digest::MD5.hexdigest(File.read(local_path)))
             filename = File.basename( remote_path )
 
-            type = case File.extension( filename )
+            type = case File.extname( filename )
               when '.js'
                 'javascripts'
               when '.css'
@@ -106,6 +106,7 @@ module Jammit
             # split local path into it's directory and filename components
             path_parts = local_path.split( '/' )[0]
 
+            # we only want to do this if this is not a compiled asset or image
             if path_parts[0] == 'assets' || path_parts[0] == 'images'
               path_parts.shift # remove first element
               filename = path_parts.join( '/' ) # we want the whole directory structure in the resulting path
