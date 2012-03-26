@@ -89,9 +89,7 @@ module Jammit
           # if the object does not exist, or if the MD5 Hash / etag of the
           # file has changed, upload it
           if !obj || (obj.etag != Digest::MD5.hexdigest(File.read(local_path)))
-            filename = File.basename( remote_path )
-
-            type = case File.extname( filename )
+            type = case File.extname( remote_path )
               when '.js'
                 'javascripts'
               when '.css'
@@ -103,16 +101,8 @@ module Jammit
             # let's get the asset path back into a format that allows for relative
             # access to our assets
 
-            path_prefix = "assets/#{ Jammit.configuration[ :package_path_suffix ] }/"
-
-            # we only want to do this if this is not a compiled asset or image
-            path_suffix = if remote_path.start_with?( 'assets' ) || remote_path.start_with?( 'images' )
-              "#{ type }/#{ filename }"
-            else
-              remote_path
-            end
-
-            remote_path = path_prefix + path_suffix
+            path = "assets/#{ Jammit.configuration[ :package_path_suffix ] }/#{ type }/#{ remote_path }"
+            remote_path = path
 
             upload_file local_path, remote_path, use_gzip
 
