@@ -104,7 +104,7 @@ module Jammit
             # access to our assets
 
             # split local path into it's directory and filename components
-            path_parts = local_path.split( '/' )[0]
+            path_parts = local_path.split( '/' )
 
             # we only want to do this if this is not a compiled asset or image
             if path_parts[0] == 'assets' || path_parts[0] == 'images'
