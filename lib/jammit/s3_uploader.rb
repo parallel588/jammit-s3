@@ -90,9 +90,8 @@ module Jammit
           # file has changed, upload it
           if !obj || (obj.etag != Digest::MD5.hexdigest(File.read(local_path)))
             filename = File.basename( remote_path )
-            extension = filename.match(/\.\w+/)[0] # just get the first extension. we don't care if it's gzipped
 
-            type = case extension
+            type = case File.extension( filename )
               when '.js'
                 'javascripts'
               when '.css'
@@ -103,6 +102,14 @@ module Jammit
 
             # let's get the asset path back into a format that allows for relative
             # access to our assets
+
+            # split local path into it's directory and filename components
+            path_parts = local_path.split( '/' )[0]
+
+            if path_parts[0] == 'assets' || path_parts[0] == 'images'
+              path_parts.shift # remove first element
+              filename = path_parts.join( '/' ) # we want the whole directory structure in the resulting path
+            end
 
             remote_path = "assets/#{ Jammit.configuration[ :package_path_suffix ] }/#{ type }/#{ filename }"
 
