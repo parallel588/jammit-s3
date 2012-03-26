@@ -106,7 +106,7 @@ module Jammit
             path_prefix = "assets/#{ Jammit.configuration[ :package_path_suffix ] }/"
 
             # we only want to do this if this is not a compiled asset or image
-            path_suffix = if remote_path.starts_with?( 'assets' ) || remote_path.starts_with?( 'images' )
+            path_suffix = if remote_path.start_with?( 'assets' ) || remote_path.start_with?( 'images' )
               "#{ type }/#{ filename }"
             else
               remote_path
