@@ -103,16 +103,16 @@ module Jammit
             # let's get the asset path back into a format that allows for relative
             # access to our assets
 
-            # split local path into it's directory and filename components
-            path_parts = local_path.split( '/' )
+            path_prefix = "assets/#{ Jammit.configuration[ :package_path_suffix ] }/"
 
             # we only want to do this if this is not a compiled asset or image
-            if path_parts[0] != 'assets' && path_parts[0] != 'images'
-              path_parts.shift # remove first element
-              filename = path_parts.join( '/' ) # we want the whole directory structure in the resulting path
+            path_suffix = if remote_path.starts_with?( 'assets' ) || remote_path.starts_with?( 'images' )
+              "#{ type }/#{ filename }"
+            else
+              remote_path
             end
 
-            remote_path = "assets/#{ Jammit.configuration[ :package_path_suffix ] }/#{ type }/#{ filename }"
+            remote_path = path_prefix + path_suffix
 
             upload_file local_path, remote_path, use_gzip
 
