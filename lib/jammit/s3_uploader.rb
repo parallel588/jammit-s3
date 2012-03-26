@@ -90,7 +90,7 @@ module Jammit
           # file has changed, upload it
           if !obj || (obj.etag != Digest::MD5.hexdigest(File.read(local_path)))
             filename = File.basename( remote_path )
-            extension = filename.match(/\.\w+/) # just get the first extension. we don't care if it's gzipped
+            extension = filename.match(/\.\w+/)[0] # just get the first extension. we don't care if it's gzipped
 
             type = case extension
               when '.js'
