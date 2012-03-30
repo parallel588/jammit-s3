@@ -89,26 +89,6 @@ module Jammit
           # if the object does not exist, or if the MD5 Hash / etag of the
           # file has changed, upload it
           if !obj || (obj.etag != Digest::MD5.hexdigest(File.read(local_path)))
-            type = case File.extname( remote_path )
-              when '.js'
-                'javascripts'
-              when '.css'
-                'stylesheets'
-              when '.gif', '.jpg', '.png'
-                'images'
-            end
-
-            # let's get the asset path back into a format that allows for relative
-            # access to our assets
-
-            path_parts = remote_path.split( '/' )
-
-            path_parts.shift # get rid of the first part of the path
-            remote_path = path_parts.join( '/' ) # reassembled path
-
-            path = "assets/#{ Jammit.configuration[ :package_path_suffix ] }/#{ type }/#{ remote_path }"
-            remote_path = path
-
             upload_file local_path, remote_path, use_gzip
 
             if use_invalidation? && obj
