@@ -82,13 +82,15 @@ module Jammit
           # check if the file already exists on s3
           begin
             obj = @bucket.objects[remote_path]
+            obj = nil unless obj.exists?
           rescue
             obj = nil
           end
 
           # if the object does not exist, or if the MD5 Hash / etag of the
           # file has changed, upload it
-          if !obj || (obj.etag != Digest::MD5.hexdigest(File.read(local_path)))
+          if !obj ||
+              ((obj.etag != Digest::MD5.hexdigest(File.read(local_path))) rescue true)
             upload_file local_path, remote_path, use_gzip
 
             if use_invalidation? && obj
