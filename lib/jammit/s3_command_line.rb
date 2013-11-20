@@ -1,4 +1,4 @@
-require 'aws/s3'
+require 'aws-sdk'
 module Jammit
   class S3CommandLine < CommandLine
     def initialize
@@ -7,7 +7,7 @@ module Jammit
 
       begin
         Jammit.upload_to_s3!
-      rescue AWS::S3::S3Exception => e
+      rescue  => e
         puts e.message
         exit(1)
       end

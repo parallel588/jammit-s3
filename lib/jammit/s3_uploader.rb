@@ -8,7 +8,7 @@ require 'digest/md5'
 
 module Jammit
   class S3Uploader
-    include AWS::S3
+    # include AWS::S3
     include Jammit::S3AssetsVersioning
 
     def initialize(options = { })
@@ -81,7 +81,7 @@ module Jammit
         else # selectively upload files if local version is different
           # check if the file already exists on s3
           begin
-            obj = @bucket[remote_path]
+            obj = @bucket.objects[remote_path]
           rescue
             obj = nil
           end
@@ -104,19 +104,18 @@ module Jammit
 
     def upload_file(local_path, remote_path, use_gzip)
       file = open(local_path)
-      
+
       # save to s3
       log "#{local_path.gsub(/^#{ASSET_ROOT}\/public\//, "")} => #{remote_path}"
-      new_object, options = @bucket.new_object, {}
-      new_object.key = remote_path
-      new_object.value = file
+
+      options = {}
       options[:cache_control] = @cache_control if @cache_control
       options[:content_type] = MimeMagic.by_path(remote_path)
       options[:content_encoding] = "gzip" if use_gzip
       options[:expires] = @expires if @expires
-      options[:access] = @acl if @acl
+      options[:acl] = @acl if @acl
 
-      new_object.store(options)
+      @bucket.objects[remote_path].write(file, options)
 
       # silly rabbit, a process only gets 256 file descriptors by default. connections
       # dont close unless the file is opened with a block!
@@ -125,16 +124,14 @@ module Jammit
     end
 
     def find_or_create_bucket
-      AWS::S3::Base.establish_connection!(:access_key_id => @access_key_id, :secret_access_key => @secret_access_key)
-
+      s3 = AWS::S3.new(:access_key_id => @access_key_id, :secret_access_key => @secret_access_key)
       # find or create the bucket
-      begin
-        Bucket.find(@bucket_name)
-      rescue AWS::S3::NoSuchBucket
-        log "Bucket not found. Creating '#{@bucket_name}'..."
-        Bucket.create(@bucket_name, :access => @acl.to_sym)
-        Bucket.find(@bucket_name)
+
+      unless (@bucket = s3.buckets[@bucket_name]).exists?
+        @bucket = s3.buckets.create(@bucket_name)
       end
+
+      @bucket
     end
 
     def invalidate_cache(files)
