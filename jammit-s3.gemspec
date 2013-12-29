@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   #s.add_dependency 'jammit',    '~> 0.6.0'
 
   s.add_dependency 'mimemagic',  '>= 0.1.7'
-  s.add_dependency 'aws-sdk', ">= 1.11.1"
+  s.add_dependency 'aws-sdk', "~> 1.3.4"
   s.add_dependency 'ruby-hmac'
 
   s.files = Dir['lib/**/*', 'bin/*', 'jammit-s3.gemspec', 'LICENSE', 'README']
